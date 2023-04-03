@@ -28,7 +28,6 @@ app.UseHttpMetrics(options =>
     options.AddCustomLabel("host", context => context.Request.Host.Host);
 });
 
-app.UseCors();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapMetrics();
