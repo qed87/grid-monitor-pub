@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  energymonitor:
+    build:      
+      context: .
+      dockerfile: ./kirchnerd.EnergyMonitor/Dockerfile
+    command:
+      - '/ACCESS_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwd2QiLCJpYXQiOjE2ODUyNjU3OTYsInVzZXJfaWQiOiIxMTg0OTcyIiwic24iOiIxIiwidXNlcl9hcGlfdXJsIjoiaHR0cHM6XC9cL3NoZWxseS00MC1ldS5zaGVsbHkuY2xvdWQiLCJuIjo5OTg4LCJmcm9tIjoic2hlbGx5LWRpeSIsImV4cCI6MTY4NTMwODk5Nn0.62AYQnDi71qltIEmDqcrVEKwOWXWcqNskgTi7RjBQMs'
+      - '/REFRESH_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGVsbHktZGl5IiwiaWF0IjoxNjg1MjY1Njg3LCJ1c2VyX2lkIjoiMTE4NDk3MiIsInNuIjoiMSIsInVzZXJfYXBpX3VybCI6Imh0dHBzOlwvXC9zaGVsbHktNDAtZXUuc2hlbGx5LmNsb3VkIiwibiI6ODU1N30.Ddba3j-ThZ1Qn38k7vxrl_P5l16iGCW_1Bw-8oQ_LMg'
+    ports:
+      - 8080:80
+      - 5030:5030
+    restart: always
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+#      - /home/prometheus/:/etc/prometheus/
+#      - /home/prometheus/data:/prometheus/
+      - C:\prometheus:/etc/prometheus
+      - C:\prometheus\data:/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=3y'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - 9090:9090
+    depends_on:
+      - energymonitor
+    restart: always
