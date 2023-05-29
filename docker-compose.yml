@@ -5,19 +5,18 @@ services:
       context: .
       dockerfile: ./kirchnerd.EnergyMonitor/Dockerfile
     command:
-      - '/ACCESS_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwd2QiLCJpYXQiOjE2ODUyNjU3OTYsInVzZXJfaWQiOiIxMTg0OTcyIiwic24iOiIxIiwidXNlcl9hcGlfdXJsIjoiaHR0cHM6XC9cL3NoZWxseS00MC1ldS5zaGVsbHkuY2xvdWQiLCJuIjo5OTg4LCJmcm9tIjoic2hlbGx5LWRpeSIsImV4cCI6MTY4NTMwODk5Nn0.62AYQnDi71qltIEmDqcrVEKwOWXWcqNskgTi7RjBQMs'
-      - '/REFRESH_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGVsbHktZGl5IiwiaWF0IjoxNjg1MjY1Njg3LCJ1c2VyX2lkIjoiMTE4NDk3MiIsInNuIjoiMSIsInVzZXJfYXBpX3VybCI6Imh0dHBzOlwvXC9zaGVsbHktNDAtZXUuc2hlbGx5LmNsb3VkIiwibiI6ODU1N30.Ddba3j-ThZ1Qn38k7vxrl_P5l16iGCW_1Bw-8oQ_LMg'
+      - '/ACCESS_TOKEN=[paste_access_token_here]'
+      - '/REFRESH_TOKEN=[paste_refresh_token_here]'
     ports:
       - 8080:80
-      - 5030:5030
+    networks:
+      - monitoring
     restart: always
   prometheus:
     image: prom/prometheus:latest
     volumes:
-#      - /home/prometheus/:/etc/prometheus/
-#      - /home/prometheus/data:/prometheus/
-      - C:\prometheus:/etc/prometheus
-      - C:\prometheus\data:/prometheus/
+     - /home/prometheus/:/etc/prometheus/
+     - /home/prometheus/data:/prometheus/
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -26,6 +25,10 @@ services:
       - '--web.console.templates=/usr/share/prometheus/consoles'
     ports:
       - 9090:9090
+    networks:
+      - monitoring
     depends_on:
       - energymonitor
     restart: always
+networks:
+  monitoring:
